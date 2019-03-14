@@ -1,0 +1,73 @@
+group 'center.orbita.personaldata'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'kotlin'
+apply plugin: 'idea'
+apply plugin: 'net.corda.plugins.publish-utils'
+apply plugin: 'net.corda.plugins.cordapp'
+apply plugin: 'net.corda.plugins.cordformation'
+apply plugin: 'net.corda.plugins.quasar-utils'
+apply plugin: 'maven-publish'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    jcenter()
+    maven { url 'https://plugins.gradle.org/m2/' }
+    maven { url 'https://dl.bintray.com/kotlin/exposed' }
+    maven { url 'https://jitpack.io' }
+    maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases' }
+    maven { url 'https://repo.spring.io/libs-milestone' }
+}
+
+
+configurations {
+    integrationTestCompile.extendsFrom testCompile
+    integrationTestRuntime.extendsFrom testRuntime
+    demoArtifacts.extendsFrom integrationTestRuntime
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+
+    // Corda integration dependencies
+    cordaRuntime "net.corda:corda"
+    cordaCompile "net.corda:corda-core"
+    cordaCompile "net.corda:corda-jackson"
+    cordaCompile "net.corda:corda-rpc"
+    cordaRuntime "net.corda:corda-webserver"
+    cordaCompile "net.corda:corda-webserver-impl"
+
+    compile "org.apache.commons:commons-lang3"
+    compile "com.fasterxml.jackson.core:jackson-annotations:2.9.6"
+    compile "com.fasterxml.jackson.core:jackson-databind:2.9.6"
+
+    testCompile "net.corda:corda-node-driver"
+    testCompile "org.jetbrains.kotlin:kotlin-test"
+    testCompile "junit:junit"
+    testCompile "org.assertj:assertj-core"
+
+    // CorDapp dependencies
+    // Specify your cordapp's dependencies below, including dependent cordapps
+    compile "org.slf4j:jul-to-slf4j:$slf4j_version"
+}
+
+idea {
+    module {
+        downloadJavadoc = true // defaults to false
+        downloadSources = true
+    }
+}
+
+publishing {
+    publications {
+        jarAndSources(MavenPublication) {
+            from components.java
+            groupId 'center.orbita.callcenter'
+            artifactId 'cordapp'
+        }
+    }
+    repositories {
+        mavenLocal()
+    }
+}

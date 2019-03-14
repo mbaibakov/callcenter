@@ -1,0 +1,39 @@
+version: '3.3'
+
+networks:
+    custom:
+        driver: bridge
+        driver_opts:
+            com.docker.network.driver.mtu: 1400
+
+services:
+
+    postgres:
+        container_name: postgres
+        image: postgres:10.1-alpine
+        environment:
+            - POSTGRES_DB=call_center
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=12345
+        ports:
+            - "5432:5432"
+        volumes:
+            - pgdata:/var/lib/postgresql/data
+        networks:
+            - custom
+
+    api:
+        container_name: api
+        image: 685321914474.dkr.ecr.eu-west-3.amazonaws.com/orbita/call-center/api
+        environment:
+            - "JAVA_OPTS=-Xmx512m -DLogDir=/var/log/api -Dspring.config.location=/var/config/api/application.yml -Dfile.encoding=UTF8"
+        ports:
+            - 9999:9999
+        depends_on:
+            - postgres
+        networks:
+            - custom
+
+
+volumes:
+    pgdata:

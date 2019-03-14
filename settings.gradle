@@ -1,0 +1,9 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+    }
+}
+rootProject.name = 'callcenter'
+
+include 'api'
+include 'cordapp'

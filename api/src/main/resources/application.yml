@@ -1,0 +1,22 @@
+server:
+    port: 9999
+
+spring:
+    rabbitmq:
+        port: 5672
+        username: call_center
+        password: i4vtMx9nLEzv6ZhiUg2gXofo
+        host: 95.216.166.202
+        virtualHost: call_center
+
+    datasource:
+        driverClassName: org.postgresql.Driver
+        url: jdbc:postgresql://localhost:5432/call_center
+        username: postgres
+        password: 12345
+
+    jpa:
+        show_sql: true
+        hibernate:
+            ddl-auto: update
+        properties.hibernate.temp.use_jdbc_metadata_defaults: false
