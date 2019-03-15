@@ -26,7 +26,7 @@ abstract class AbstractContactTests<S : LinearState> {
     protected open val editAction get() = "editing $stateName"
     protected open val removeAction get() = "removing $stateName"
 
-    val ledgerServices = MockServices(listOf("center.orbita.personaldata.contract"))
+    val ledgerServices = MockServices(listOf("center.orbita.callcenter.contract"))
 
     fun createCommandTransactionMustBeWellFormed() {
         createCommandTransactionMustBeWellFormed(createCommand, inputStateForTest)

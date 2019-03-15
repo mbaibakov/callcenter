@@ -18,7 +18,7 @@ abstract class BaseFlowTest {
 
     @Before
     open fun setup() {
-        network = MockNetwork(listOf("center.orbita.personaldata"))
+        network = MockNetwork(listOf("center.orbita.callcenter"))
 
         a = network.createPartyNode()
         aParty = a.info.legalIdentities.single()
