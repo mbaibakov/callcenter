@@ -31,7 +31,7 @@ class VoiceRobotService(val serviceStatusRepository: ServiceStatusRepository,
             if (serviceStatuses.isEmpty()) return errorResponse(3, "Ни одно заявление не найдено")
 
             return VoiceRobotResponse(data = VoiceRobotResponseApplicationsData(serviceStatuses.map {
-                ApplicationData(number = it.phoneNumber!!,
+                ApplicationData(number = it.number!!,
                         status = it.statusCode!!,
                         createDate = it.creationDate!!,
                         plannedDate = it.releaseDate!!,
