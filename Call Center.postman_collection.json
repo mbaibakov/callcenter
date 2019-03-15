@@ -1,0 +1,39 @@
+{
+	"info": {
+		"_postman_id": "ddc63067-f2b1-4aeb-bd6c-3a29153cfc8b",
+		"name": "Call Center",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "getApplicationsByMsisdn",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"data\": {\n\t\t\"method\": \"getApplicationsByMsisdn\",\n\t\t\"msisdn\": \"+79161234455\"\n\t}\n}"
+				},
+				"url": {
+					"raw": "http://localhost:9999/voice-robot",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9999",
+					"path": [
+						"voice-robot"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.amqp.core.Message
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.stereotype.Component
+import java.io.IOException
 
 @Component
 class ServiceStatusRabbitListener(val repository: ServiceStatusRepository) {
@@ -18,13 +19,17 @@ class ServiceStatusRabbitListener(val repository: ServiceStatusRepository) {
     fun processMessage(message: Message) {
         val body = String(message.body)
         logger.info("Incoming message $body")
-        val msg = mapper.readValue(body, ServiceStatusMessage::class.java)
-        val existEntity = repository.getByNumber(msg.number)
-        val newEntity = existEntity?.copy(statusCode = msg.statusCode,
-                statusDescription = msg.statusDescription,
-                creationDate = msg.creationDate,
-                releaseDate = msg.releaseDate)
-                ?: msg.convertToEntity()
-        repository.save(newEntity)
+        try {
+            val msg = mapper.readValue(body, ServiceStatusMessage::class.java)
+            val existEntity = repository.getByNumber(msg.number)
+            val newEntity = existEntity?.copy(statusCode = msg.statusCode,
+                    statusDescription = msg.statusDescription,
+                    creationDate = msg.creationDate,
+                    releaseDate = msg.releaseDate)
+                    ?: msg.convertToEntity()
+            repository.save(newEntity)
+        } catch (e: IOException){
+            logger.error(e.localizedMessage, e)
+        }
     }
 }

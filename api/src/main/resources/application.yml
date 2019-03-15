@@ -20,3 +20,11 @@ spring:
         hibernate:
             ddl-auto: update
         properties.hibernate.temp.use_jdbc_metadata_defaults: false
+
+config:
+    rpc:
+        agent-node:
+            username: apiUser
+            password: c0rd@pass
+            host: localhost
+            port: 10005

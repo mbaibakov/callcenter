@@ -2,6 +2,11 @@ version: '3.3'
 
 services:
 
+    corda-node:
+        build:
+            context: ../images/nodes
+        image: 685321914474.dkr.ecr.eu-west-3.amazonaws.com/orbita/call-center/corda-node
+
     api:
         build:
           context: ../api

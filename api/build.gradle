@@ -23,6 +23,11 @@ repositories {
     mavenCentral()
 }
 
+configurations {
+    compile.exclude group: "org.apache.logging.log4j"
+    runtime.exclude group: "org.apache.logging.log4j"
+}
+
 dependencies {
     compile "org.springframework.boot:spring-boot-starter-amqp"
     compile "org.springframework.boot:spring-boot-starter-web"
@@ -33,6 +38,23 @@ dependencies {
     compile "com.fasterxml.jackson.core:jackson-annotations"
 
     compile "org.postgresql:postgresql"
+    
+    // it's just a "hot fix". I hope there exists a more nice way to fix jar hell with these dependencies
+    compile(project(path: ":cordapp")) {
+        exclude group: 'org.apache.activemq'
+    }
+
+    compile "org.apache.activemq:artemis-amqp-protocol"
+    compile "org.apache.activemq:artemis-commons"
+    compile "org.apache.activemq:artemis-core-client"
+    compile "org.apache.activemq:artemis-jdbc-store"
+    compile "org.apache.activemq:artemis-jms-client"
+    compile "org.apache.activemq:artemis-journal"
+    compile "org.apache.activemq:artemis-native"
+    compile "org.apache.activemq:artemis-selector"
+    compile "org.apache.activemq:artemis-server"
+
+    compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.30.2"
 }
 
 compileKotlin {

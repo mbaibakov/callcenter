@@ -22,4 +22,6 @@
 
 ```
 ./teardown.sh
-```св
+```
+
+В корне проекта находится файл `Call Center.postman_collection.json` в котором записана колеция запросов для Postman.
