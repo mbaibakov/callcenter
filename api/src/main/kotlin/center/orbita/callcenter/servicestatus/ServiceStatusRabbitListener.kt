@@ -21,12 +21,16 @@ class ServiceStatusRabbitListener(val repository: ServiceStatusRepository) {
         logger.info("Incoming message $body")
         try {
             val msg = mapper.readValue(body, ServiceStatusMessage::class.java)
+            logger.info("Incoming object $msg")
+
             val existEntity = repository.getByNumber(msg.number)
             val newEntity = existEntity?.copy(statusCode = msg.statusCode,
                     statusDescription = msg.statusDescription,
                     creationDate = msg.creationDate,
                     releaseDate = msg.releaseDate)
                     ?: msg.convertToEntity()
+            logger.info("New entity $msg")
+
             repository.save(newEntity)
         } catch (e: IOException){
             logger.error(e.localizedMessage, e)

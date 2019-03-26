@@ -20,11 +20,11 @@ data class ServiceStatusMessage(
     @JsonProperty("status_desc")
     val statusDescription: String,
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "YYYY-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @JsonProperty("output_target_dt")
     val releaseDate: Date,
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "YYYY-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @JsonProperty("create_target_dt")
     val creationDate: Date
 ) {

@@ -59,7 +59,7 @@ services:
 
     agent:
         container_name: agent
-        image: 685321914474.dkr.ecr.eu-west-3.amazonaws.com/orbita/pers-data/corda-node:latest
+        image: 685321914474.dkr.ecr.eu-west-3.amazonaws.com/orbita/call-center/corda-node:latest
         environment:
             - "JAVA_OPTS=-Xmx512m"
         ports:
