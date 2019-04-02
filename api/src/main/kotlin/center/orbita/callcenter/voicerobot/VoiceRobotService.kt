@@ -47,7 +47,6 @@ class VoiceRobotService(val serviceStatusRepository: ServiceStatusRepository,
 
     private fun isMsisdnCorrect(msisdn: String)= msisdn.matches(Regex("^(\\+7)+[0-9]{10}"))
 
-
     private fun normalizePhoneNUmber(msisdn: String) = msisdn.substring(2)
 
     private fun errorResponse(code: Int, title: String, detail: String? = null) =
