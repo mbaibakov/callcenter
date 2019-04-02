@@ -35,5 +35,35 @@
 			},
 			"response": []
 		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "aef75998-52b3-4f18-885f-66e8093f24dc",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "0557b365-9c74-4546-b232-7e72764c327b",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "b54ab22d-27d3-405e-ac10-420e2406edf5",
+			"key": "host",
+			"value": "localhost:9999",
+			"type": "string"
+		}
 	]
 }

@@ -23,6 +23,9 @@ class VoiceRobotService(val serviceStatusRepository: ServiceStatusRepository,
     fun processRequest(request: VoiceRobotRequest): VoiceRobotResponse {
         if (request.data.method == GetApplicationsByMsisdnMethod) {
             asyncWriteRequestToCorda(request)
+
+            if (!isMsisdnCorrect(request.data.msisdn)) return errorResponse(2, "Неправильный формат msisdn")
+
             val calendar = Calendar.getInstance()
             calendar.add(Calendar.DATE, -DEFAULT_DAY_PERIOD)
             val creationDate = calendar.time
@@ -41,6 +44,9 @@ class VoiceRobotService(val serviceStatusRepository: ServiceStatusRepository,
             return errorResponse(1, "Неверный формат запроса", "Метод ${request.data.method} не поддерживается")
         }
     }
+
+    private fun isMsisdnCorrect(msisdn: String)= msisdn.matches(Regex("^(\\+7)+[0-9]{10}"))
+
 
     private fun normalizePhoneNUmber(msisdn: String) = msisdn.substring(2)
 
