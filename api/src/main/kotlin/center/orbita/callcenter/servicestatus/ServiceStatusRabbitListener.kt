@@ -29,15 +29,15 @@ class ServiceStatusRabbitListener(private val repository: ServiceStatusRepositor
             val msg = mapper.readValue(body, ServiceStatusMessage::class.java)
             logger.debug("Incoming object $msg")
 
-//            val existEntity = repository.getByNumber(msg.number)
-//            val newEntity = existEntity?.copy(statusCode = msg.statusCode,
-//                    statusDescription = msg.statusDescription,
-//                    creationDate = msg.creationDate,
-//                    releaseDate = msg.releaseDate)
-//                    ?: msg.convertToEntity()
-//            logger.debug("New entity $newEntity")
+            val existEntity = repository.getByNumber(msg.number)
+            val newEntity = existEntity?.copy(statusCode = msg.statusCode,
+                    statusDescription = msg.statusDescription,
+                    creationDate = msg.creationDate,
+                    releaseDate = msg.releaseDate)
+                    ?: msg.convertToEntity()
+            logger.debug("New entity $newEntity")
 
-//            repository.save(newEntity)
+            repository.save(newEntity)
         } catch (e: IOException) {
             logger.error(e.localizedMessage, e)
         }
