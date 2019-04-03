@@ -16,6 +16,12 @@ class ServiceStatusRabbitListener(private val repository: ServiceStatusRepositor
     }
 
     @RabbitListener(queues = ["call_center_in"])
+    fun processMessage1(message: Message) = processMessage(message)
+
+    @RabbitListener(queues = ["call_center_in"])
+    fun processMessage2(message: Message) = processMessage(message)
+
+    @RabbitListener(queues = ["call_center_in"])
     fun processMessage(message: Message) {
         val body = String(message.body)
         logger.debug("Incoming message $body")
