@@ -21,8 +21,9 @@ class ServiceStatusRabbitPerformanceTest {
 
         val mapper = ObjectMapper().registerModule(KotlinModule())
 
-        for (i in 1..10000) {
-            val serviceStatusMessage = ServiceStatusMessage(phoneNumber = "+79991234567",
+        for (i in 1..100) {
+            val serviceStatusMessage = ServiceStatusMessage(serviceNumber = "service_number_$i",
+                    phoneNumber = "+79991234567",
                     statusCode = 0,
                     creationDate = Date(),
                     releaseDate = Date(),
@@ -30,6 +31,7 @@ class ServiceStatusRabbitPerformanceTest {
                     statusDescription = "",
                     number = "test-$i")
             val message = mapper.writeValueAsString(serviceStatusMessage)
+            println(message)
             template.convertAndSend("call_center_in", message)
         }
     }
