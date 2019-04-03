@@ -55,6 +55,8 @@ dependencies {
     compile "org.apache.activemq:artemis-server"
 
     compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.30.2"
+
+    testCompile "junit:junit"
 }
 
 compileKotlin {

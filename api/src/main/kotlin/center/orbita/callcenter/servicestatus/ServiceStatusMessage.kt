@@ -1,9 +1,11 @@
 package center.orbita.callcenter.servicestatus
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.util.Date
 
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 data class ServiceStatusMessage(
     @JsonProperty("phone_number")
     val phoneNumber: String,
