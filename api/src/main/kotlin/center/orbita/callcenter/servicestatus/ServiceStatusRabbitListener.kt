@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component
 import java.io.IOException
 
 @Component
-class ServiceStatusRabbitListener(val repository: ServiceStatusRepository) {
+class ServiceStatusRabbitListener(private val repository: ServiceStatusRepository) {
 
     companion object {
         val logger = LoggerFactory.getLogger(ServiceStatusRabbitListener::class.java)!!
@@ -29,10 +29,10 @@ class ServiceStatusRabbitListener(val repository: ServiceStatusRepository) {
                     creationDate = msg.creationDate,
                     releaseDate = msg.releaseDate)
                     ?: msg.convertToEntity()
-            logger.info("New entity $msg")
+            logger.info("New entity $newEntity")
 
             repository.save(newEntity)
-        } catch (e: IOException){
+        } catch (e: IOException) {
             logger.error(e.localizedMessage, e)
         }
     }

@@ -19,21 +19,49 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"data\": {\n\t\t\"method\": \"getApplicationsByMsisdn\",\n\t\t\"msisdn\": \"+79161234455\"\n\t}\n}"
+					"raw": "{\n\t\"data\": {\n\t\t\"method\": \"getApplicationsByMsisdn\",\n\t\t\"msisdn\": \"+791512341\"\n\t}\n}"
 				},
 				"url": {
-					"raw": "http://localhost:9999/voice-robot",
-					"protocol": "http",
+					"raw": "{{host}}/voice-robot",
 					"host": [
-						"localhost"
+						"{{host}}"
 					],
-					"port": "9999",
 					"path": [
 						"voice-robot"
 					]
 				}
 			},
 			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "aef75998-52b3-4f18-885f-66e8093f24dc",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "0557b365-9c74-4546-b232-7e72764c327b",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "9b226e48-c7c8-47c6-84a4-8d6e001f737e",
+			"key": "host",
+			"value": "localhost:9999",
+			"type": "string"
 		}
 	]
 }
