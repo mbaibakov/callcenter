@@ -16,22 +16,23 @@ class ServiceStatusRabbitListener(private val repository: ServiceStatusRepositor
     }
 
     @RabbitListener(queues = ["call_center_in"])
-    fun processMessage(message: Message) {
+    fun listener1(message: Message) = processMessage(message)
+
+    @RabbitListener(queues = ["call_center_in"])
+    fun listener2(message: Message) = processMessage(message)
+
+    @RabbitListener(queues = ["call_center_in"])
+    fun listener3(message: Message) = processMessage(message)
+
+    private fun processMessage(message: Message) {
         val body = String(message.body)
         logger.info("Incoming message $body")
         try {
             val msg = mapper.readValue(body, ServiceStatusMessage::class.java)
-            logger.info("Incoming object $msg")
-
-            val existEntity = repository.getByNumber(msg.number)
-            val newEntity = existEntity?.copy(statusCode = msg.statusCode,
-                    statusDescription = msg.statusDescription,
-                    creationDate = msg.creationDate,
-                    releaseDate = msg.releaseDate)
-                    ?: msg.convertToEntity()
-            logger.info("New entity $newEntity")
-
-            repository.save(newEntity)
+            logger.debug("Incoming object $msg")
+            val entity =  msg.convertToEntity()
+            logger.info("Entity $entity")
+            repository.save(entity)
         } catch (e: IOException) {
             logger.error(e.localizedMessage, e)
         }
