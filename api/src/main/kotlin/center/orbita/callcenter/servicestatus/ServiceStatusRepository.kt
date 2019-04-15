@@ -8,6 +8,4 @@ import java.util.Date
 interface ServiceStatusRepository : CrudRepository<ServiceStatusEntity, Long> {
 
     fun getByPhoneNumberAndCreationDateGreaterThanEqual(phoneNumber: String, creationDate: Date): List<ServiceStatusEntity>
-
-    fun getByNumber(number: String): ServiceStatusEntity?
 }

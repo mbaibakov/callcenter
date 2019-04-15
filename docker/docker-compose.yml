@@ -5,6 +5,10 @@ networks:
         driver: bridge
         driver_opts:
             com.docker.network.driver.mtu: 1400
+        ipam:
+            driver: default
+            config:
+                -   subnet: "172.21.0.0/25"
 
 services:
 
@@ -20,7 +24,51 @@ services:
         volumes:
             - pgdata:/var/lib/postgresql/data
         networks:
-            - custom
+            custom:
+                aliases:
+                    - postgres
+                ipv4_address: "172.21.0.10"
+
+    notary:
+        container_name: notary
+        image: corda/corda-zulu-5.0-snapshot:latest
+        ports:
+            - "10001:10001"
+            - "10002:10002"
+            - "10003:10003"
+        volumes:
+            - ../cordapp/build/nodes/Notary/certificates:/opt/corda/certificates
+            - ../cordapp/build/nodes/Notary/additional-node-infos:/opt/corda/additional-node-infos
+            - ../cordapp/build/nodes/Notary/network-parameters:/opt/corda/network-parameters
+            - ../cordapp/build/nodes/Notary/node.conf:/etc/corda/node.conf
+            - ../cordapp/build/nodes/Notary/cordapps:/opt/corda/cordapps
+            - corda_notary:/opt/corda/persistence
+#        restart: always
+        networks:
+            custom:
+                aliases:
+                    - notary
+                ipv4_address: "172.21.0.2"
+
+    agent:
+        container_name: agent
+        image: corda/corda-zulu-5.0-snapshot:latest
+        ports:
+            - "10004:10004"
+            - "10005:10005"
+            - "10006:10006"
+        volumes:
+            - ../cordapp/build/nodes/Agent/certificates:/opt/corda/certificates
+            - ../cordapp/build/nodes/Agent/additional-node-infos:/opt/corda/additional-node-infos
+            - ../cordapp/build/nodes/Agent/network-parameters:/opt/corda/network-parameters
+            - ../cordapp/build/nodes/Agent/node.conf:/etc/corda/node.conf
+            - ../cordapp/build/nodes/Agent/cordapps:/opt/corda/cordapps
+            - corda_agent:/opt/corda/persistence
+        networks:
+            custom:
+                aliases:
+                    - agent
+                ipv4_address: "172.21.0.3"
 
     api:
         container_name: api
@@ -36,58 +84,10 @@ services:
         depends_on:
             - postgres
         networks:
-            - custom
-
-    notary:
-        container_name: notary
-        image: 685321914474.dkr.ecr.eu-west-3.amazonaws.com/orbita/call-center/corda-node:latest
-        environment:
-            - "JAVA_OPTS=-Xmx512m"
-        ports:
-            - "10001:10001"
-            - "10002:10002"
-            - "10003:10003"
-        volumes:
-            - corda_notary:/opt/corda
-            - ../images/nodes/Notary/node.conf:/opt/corda/node.conf
-            - ../cordapp/build/libs/cordapp-1.0-SNAPSHOT.jar:/opt/corda/cordapps/cordapp.jar
-        networks:
-            - custom
-        depends_on:
-            - networkmap
-        restart: always
-
-    agent:
-        container_name: agent
-        image: 685321914474.dkr.ecr.eu-west-3.amazonaws.com/orbita/call-center/corda-node:latest
-        environment:
-            - "JAVA_OPTS=-Xmx512m"
-        ports:
-            - "10004:10004"
-            - "10005:10005"
-            - "10006:10006"
-        volumes:
-            - corda_agent:/opt/corda
-            - ../images/nodes/Agent/node.conf:/opt/corda/node.conf
-            - ../cordapp/build/libs/cordapp-1.0-SNAPSHOT.jar:/opt/corda/cordapps/cordapp.jar
-        networks:
-            - custom
-        depends_on:
-            - networkmap
-        restart: always
-
-    networkmap:
-        container_name: networkmap
-        image: 685321914474.dkr.ecr.eu-west-3.amazonaws.com/orbita/pers-data/networkmap:latest
-        environment:
-            - "JAVA_OPTS=-Xmx512m -DLogDir=/var/log/networkmap -Dspring.config.location=/var/config/networkmap/application.yml"
-        ports:
-            - "8090:8090"
-            - "8015:8015"
-        networks:
-            - custom
-        restart: on-failure:3
-
+            custom:
+                aliases:
+                    - api
+                ipv4_address: "172.21.0.4"
 
 volumes:
     pgdata:

@@ -3,10 +3,10 @@ version = '0.0.1-SNAPSHOT'
 
 buildscript {
     ext {
-        kotlin_version = '1.2.21'
-        corda_release_version = '3.1-corda'
-        corda_gradle_plugins_version = '3.1.0'
-        quasar_version = '0.7.9'
+        kotlin_version = '1.2.71'
+        corda_release_version = '4.0'
+        corda_gradle_plugins_version = '4.0.38'
+        quasar_version = '0.7.10'
         spring_version = '4.3.13.RELEASE'
         spring_boot_version = '1.5.9.RELEASE'
         springfox_version = '2.8.0'
@@ -40,6 +40,7 @@ allprojects {
     apply plugin: 'kotlin'
     apply plugin: 'idea'
     apply plugin: 'io.spring.dependency-management'
+
 
     repositories {
         mavenLocal()

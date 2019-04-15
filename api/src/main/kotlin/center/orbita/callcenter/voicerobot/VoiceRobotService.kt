@@ -3,6 +3,7 @@ package center.orbita.callcenter.voicerobot
 import center.orbita.callcenter.corda.service.RequestService
 import center.orbita.callcenter.servicestatus.ServiceStatusRepository
 import center.orbita.callcenter.structure.RequestModel
+import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.async
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -53,12 +54,12 @@ class VoiceRobotService(val serviceStatusRepository: ServiceStatusRepository,
             VoiceRobotResponse(errors = listOf(VoiceRobotResponseError(code, title, detail)))
 
     private fun asyncWriteRequestToCorda(request: VoiceRobotRequest) {
-        async {
+        GlobalScope.async {
             val id = writeRequestToCorda(request)
             logger.info("Request $id created")
             id
         }
     }
 
-    private suspend fun writeRequestToCorda(request: VoiceRobotRequest) = requestService.create(RequestModel(msisdn = request.data.msisdn, creationDate = Date()))
+    private fun writeRequestToCorda(request: VoiceRobotRequest) = requestService.create(RequestModel(msisdn = request.data.msisdn, creationDate = Date()))
 }
