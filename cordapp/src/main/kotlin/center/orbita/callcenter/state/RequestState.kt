@@ -23,14 +23,16 @@ data class RequestState(
     override val linearId: UniqueIdentifier,
     override val participants: List<AbstractParty>,
     val msisdn: String,
-    val creationDate: Date
+    val creationDate: Date,
+    val responseData: String
 ) : ConvertibleOrbitaState<RequestModel, RequestEntity, RequestState> {
 
     constructor(requestModel: RequestModel, participants: List<AbstractParty>) : this(
             linearId = UniqueIdentifier(id = requestModel.id ?: UUID.randomUUID()),
             participants = participants,
             msisdn = requestModel.msisdn,
-            creationDate = requestModel.creationDate
+            creationDate = requestModel.creationDate,
+            responseData = requestModel.responseData
     )
 
     object RequestSchemaV1 : MappedSchema(RequestState::class.java, 1, listOf(RequestEntity::class.java))

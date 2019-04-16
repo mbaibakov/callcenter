@@ -32,6 +32,49 @@
 				}
 			},
 			"response": []
+        },
+      {
+        "name": "Requests list",
+        "request": {
+          "method": "GET",
+          "header": [],
+          "body": {
+            "mode": "raw",
+            "raw": ""
+          },
+          "url": {
+            "raw": "{{host}}/requests",
+            "host": [
+              "{{host}}"
+            ],
+            "path": [
+              "requests"
+            ]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Requests by phone number",
+        "request": {
+          "method": "GET",
+          "header": [],
+          "body": {
+            "mode": "raw",
+            "raw": ""
+          },
+          "url": {
+            "raw": "{{host}}/requests/+7991234567",
+            "host": [
+              "{{host}}"
+            ],
+            "path": [
+              "requests",
+              "+7991234567"
+            ]
+          }
+        },
+        "response": []
 		}
 	],
 	"event": [
@@ -58,7 +101,7 @@
 	],
 	"variable": [
 		{
-			"id": "9b226e48-c7c8-47c6-84a4-8d6e001f737e",
+          "id": "04609ab5-96a4-453e-8eb2-a98b99e4acc2",
 			"key": "host",
 			"value": "localhost:9999",
 			"type": "string"

@@ -84,10 +84,24 @@ class RequestFlowTests : BasePreparedFlowTest<RequestState>() {
         val future = a.startFlow(flow)
         network.runNetwork()
 
-        val companies = future.getOrThrow()
-        Assert.assertThat(companies.size, CoreMatchers.`is`(1))
+        val list = future.getOrThrow()
+        Assert.assertThat(list.size, CoreMatchers.`is`(1))
 
-        verify(TestConstants.requestModel, companies[0])
+        verify(TestConstants.requestModel, list[0])
+    }
+
+    @Test
+    fun `SearchRequestByMsisdnFlow works correctly`() {
+        prepareDataForTest()
+
+        val flow = SearchRequestByMsisdnFlow(TestConstants.requestState.msisdn)
+        val future = a.startFlow(flow)
+        network.runNetwork()
+
+        val list = future.getOrThrow()
+        Assert.assertThat(list.size, CoreMatchers.`is`(1))
+
+        verify(TestConstants.requestModel, list[0])
     }
 
     private fun queryModels() = queryStates(RequestState::class.java).map { (it.state.data as RequestState).convertToModel() }

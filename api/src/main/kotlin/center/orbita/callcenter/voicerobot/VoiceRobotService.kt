@@ -3,6 +3,8 @@ package center.orbita.callcenter.voicerobot
 import center.orbita.callcenter.corda.service.RequestService
 import center.orbita.callcenter.servicestatus.ServiceStatusRepository
 import center.orbita.callcenter.structure.RequestModel
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.async
 import org.slf4j.LoggerFactory
@@ -14,16 +16,22 @@ const val GetApplicationsByMsisdnMethod = "getApplicationsByMsisdn"
 const val DEFAULT_DAY_PERIOD = 31 // 31 - days (1 month)
 
 @Service
-class VoiceRobotService(val serviceStatusRepository: ServiceStatusRepository,
-    val requestService: RequestService) {
+class VoiceRobotService(private val serviceStatusRepository: ServiceStatusRepository,
+    private val requestService: RequestService) {
 
     companion object {
         val logger = LoggerFactory.getLogger(VoiceRobotService::class.java)!!
+        val mapper = ObjectMapper().registerModule(KotlinModule())!!
     }
 
     fun processRequest(request: VoiceRobotRequest): VoiceRobotResponse {
+        val response = innerProcessRequest(request)
+        asyncWriteRequestToCorda(request, response)
+        return response
+    }
+
+    private fun innerProcessRequest(request: VoiceRobotRequest): VoiceRobotResponse {
         if (request.data.method == GetApplicationsByMsisdnMethod) {
-            asyncWriteRequestToCorda(request)
 
             if (!isMsisdnCorrect(request.data.msisdn)) return errorResponse(2, "Неправильный формат msisdn")
 
@@ -53,13 +61,12 @@ class VoiceRobotService(val serviceStatusRepository: ServiceStatusRepository,
     private fun errorResponse(code: Int, title: String, detail: String? = null) =
             VoiceRobotResponse(errors = listOf(VoiceRobotResponseError(code, title, detail)))
 
-    private fun asyncWriteRequestToCorda(request: VoiceRobotRequest) {
+    private fun asyncWriteRequestToCorda(request: VoiceRobotRequest, response: VoiceRobotResponse) {
         GlobalScope.async {
-            val id = writeRequestToCorda(request)
+            val id = requestService.create(RequestModel(msisdn = request.data.msisdn,
+                    creationDate = Date(),
+                    responseData = mapper.writeValueAsString(response)))
             logger.info("Request $id created")
-            id
         }
     }
-
-    private fun writeRequestToCorda(request: VoiceRobotRequest) = requestService.create(RequestModel(msisdn = request.data.msisdn, creationDate = Date()))
 }
