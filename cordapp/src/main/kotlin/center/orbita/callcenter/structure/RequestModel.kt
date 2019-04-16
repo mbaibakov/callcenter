@@ -17,13 +17,15 @@ import javax.persistence.Table
 data class RequestModel(
     val id: UUID? = null,
     val msisdn: String,
-    val creationDate: Date
+    val creationDate: Date,
+    val responseData: String
 ) : OrbitaModel, ConvertibleOrbitaModel<RequestModel, RequestState> {
 
     constructor(requestState: RequestState) : this(
             id = requestState.linearId.id,
             msisdn = requestState.msisdn,
-            creationDate = requestState.creationDate
+            creationDate = requestState.creationDate,
+            responseData = requestState.responseData
     )
 
     override fun convertFromState(state: RequestState) = RequestModel(state)

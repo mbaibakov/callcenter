@@ -21,7 +21,8 @@ class TestConstants {
 
         val requestModel = RequestModel(
                 msisdn = "msisdn",
-                creationDate = Date()
+                creationDate = Date(),
+                responseData = "responseData"
         )
         val requestState = requestModel.convertToState(listOf(megaCorpIdentity.party))
     }
