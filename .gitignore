@@ -28,3 +28,4 @@ HELP.md
 
 ### Logs ###
 *.log
+*.log.gz

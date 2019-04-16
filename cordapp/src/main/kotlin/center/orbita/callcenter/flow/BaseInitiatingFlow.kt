@@ -9,12 +9,18 @@ import center.orbita.callcenter.util.SuspendableWrapper
 import co.paralleluniverse.fibers.Suspendable
 import net.corda.core.flows.CollectSignaturesFlow
 import net.corda.core.flows.FinalityFlow
+import net.corda.core.flows.FlowLogic
+import net.corda.core.flows.FlowSession
+import net.corda.core.flows.InitiatedBy
+import net.corda.core.flows.InitiatingFlow
+import net.corda.core.flows.ReceiveFinalityFlow
 import net.corda.core.transactions.SignedTransaction
 import net.corda.core.transactions.TransactionBuilder
 
-abstract class BaseInitiatingFlow<out T> : BaseFlow<T>() {
+@InitiatingFlow
+abstract class BaseInitiatingFlow<out T> : BaseFlow<SignedTransaction>() {
     @Suspendable
-    override fun call(): T {
+    override fun call(): SignedTransaction {
         progressTracker.currentStep = BUILDING
         val tx = getTransaction()
 
@@ -25,7 +31,19 @@ abstract class BaseInitiatingFlow<out T> : BaseFlow<T>() {
         val signedTx = serviceHub.signInitialTransaction(tx)
 
         progressTracker.currentStep = FINALISING
-        return finalizeTransaction(signedTx).call()
+
+        val commandSignersPublicKeys = signedTx.tx.commands.flatMap { it.signers }.distinct() - ourIdentity.owningKey
+        val commandSignersParties = serviceHub.networkMapCache.allNodes
+                .flatMap { it.legalIdentities }
+                .filter { commandSignersPublicKeys.contains(it.owningKey) }
+        return if (commandSignersParties.isEmpty()) {
+            val session = initiateFlow(getNotary())
+            subFlow(FinalityFlow(signedTx, session))
+        } else {
+            val flowSessions = commandSignersParties.map { initiateFlow(it) }
+            val ftx = subFlow(CollectSignaturesFlow(signedTx, flowSessions, GATHERING_SIGS.childProgressTracker()))
+            subFlow(FinalityFlow(ftx, flowSessions, FINALISING.childProgressTracker()))
+        }
     }
 
     abstract fun getTransaction(): TransactionBuilder
@@ -40,16 +58,24 @@ abstract class BaseInitiatingFlow<out T> : BaseFlow<T>() {
                 val commandSignersParties = serviceHub.networkMapCache.allNodes
                         .flatMap { it.legalIdentities }
                         .filter { commandSignersPublicKeys.contains(it.owningKey) }
-
                 return if (commandSignersParties.isEmpty()) {
-                    subFlow(FinalityFlow(signedTx))
+                    val session = initiateFlow(ourIdentity)
+                    subFlow(FinalityFlow(signedTx, session))
                 } else {
                     val flowSessions = commandSignersParties.map { initiateFlow(it) }
-                    val ftx = subFlow(CollectSignaturesFlow(signedTx, flowSessions,
-                            GATHERING_SIGS.childProgressTracker()))
-                    subFlow(FinalityFlow(ftx, FINALISING.childProgressTracker()))
+                    val ftx = subFlow(CollectSignaturesFlow(signedTx, flowSessions, GATHERING_SIGS.childProgressTracker()))
+                    subFlow(FinalityFlow(ftx, flowSessions, FINALISING.childProgressTracker()))
                 }
             }
         }
+    }
+}
+
+
+@InitiatedBy(BaseInitiatingFlow::class)
+class BaseReceivingFlow(private val otherSide: FlowSession) : FlowLogic<Unit>() {
+    @Suspendable
+    override fun call() {
+        subFlow(ReceiveFinalityFlow(otherSide))
     }
 }

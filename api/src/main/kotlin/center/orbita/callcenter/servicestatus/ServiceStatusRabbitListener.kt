@@ -7,6 +7,8 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.stereotype.Component
 import java.io.IOException
 
+const val queue = "call_center_in"
+
 @Component
 class ServiceStatusRabbitListener(private val repository: ServiceStatusRepository) {
 
@@ -15,13 +17,13 @@ class ServiceStatusRabbitListener(private val repository: ServiceStatusRepositor
         val mapper = ObjectMapper()
     }
 
-    @RabbitListener(queues = ["call_center_in"])
+    @RabbitListener(queues = [queue])
     fun listener1(message: Message) = processMessage(message)
 
-    @RabbitListener(queues = ["call_center_in"])
+    @RabbitListener(queues = [queue])
     fun listener2(message: Message) = processMessage(message)
 
-    @RabbitListener(queues = ["call_center_in"])
+    @RabbitListener(queues = [queue])
     fun listener3(message: Message) = processMessage(message)
 
     private fun processMessage(message: Message) {
@@ -30,7 +32,7 @@ class ServiceStatusRabbitListener(private val repository: ServiceStatusRepositor
         try {
             val msg = mapper.readValue(body, ServiceStatusMessage::class.java)
             logger.debug("Incoming object $msg")
-            val entity =  msg.convertToEntity()
+            val entity = msg.convertToEntity()
             logger.info("Entity $entity")
             repository.save(entity)
         } catch (e: IOException) {

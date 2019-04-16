@@ -17,8 +17,6 @@ apply plugin: 'idea'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'org.springframework.boot'
 
-
-
 repositories {
     mavenCentral()
 }
@@ -33,7 +31,7 @@ dependencies {
     compile "org.springframework.boot:spring-boot-starter-web"
     compile "org.springframework.boot:spring-boot-starter-data-jpa"
 
-    compile "com.fasterxml.jackson.module:jackson-module-kotlin"
+    compile "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.7"
     compile "com.fasterxml.jackson.core:jackson-databind"
     compile "com.fasterxml.jackson.core:jackson-annotations"
 
@@ -70,5 +68,11 @@ compileTestKotlin {
     kotlinOptions {
         freeCompilerArgs = ['-Xjsr305=strict']
         jvmTarget = '1.8'
+    }
+}
+
+kotlin {
+    experimental {
+        coroutines "enable"
     }
 }

@@ -1,6 +1,7 @@
 package center.orbita.callcenter.flow
 
 import center.orbita.callcenter.TestConstants
+import center.orbita.callcenter.contract.RequestContract
 import center.orbita.callcenter.state.RequestState
 import center.orbita.callcenter.structure.RequestModel
 import net.corda.core.utilities.getOrThrow
@@ -11,6 +12,10 @@ import org.junit.Test
 
 class RequestFlowTests : BasePreparedFlowTest<RequestState>() {
     override fun createTestState() = TestConstants.requestModel.convertToState(listOf(aParty))
+
+    override fun getContractId() = RequestContract.CONTRACT_ID
+
+    override fun getCommand() = RequestContract.Create()
 
     @Test
     fun `CreateRequestFlow works correctly`() {

@@ -1,8 +1,11 @@
 package center.orbita.callcenter.flow
 
 import net.corda.core.identity.Party
+import net.corda.testing.common.internal.testNetworkParameters
 import net.corda.testing.node.MockNetwork
+import net.corda.testing.node.MockNetworkParameters
 import net.corda.testing.node.StartedMockNode
+import net.corda.testing.node.TestCordapp
 import org.junit.After
 import org.junit.Before
 
@@ -18,7 +21,7 @@ abstract class BaseFlowTest {
 
     @Before
     open fun setup() {
-        network = MockNetwork(listOf("center.orbita.callcenter"))
+        network = MockNetwork(MockNetworkParameters(cordappsForAllNodes = listOf(TestCordapp.findCordapp("center.orbita.callcenter")), networkParameters = testNetworkParameters(minimumPlatformVersion = 4)))
 
         a = network.createPartyNode()
         aParty = a.info.legalIdentities.single()
@@ -28,6 +31,8 @@ abstract class BaseFlowTest {
 
         notary = network.defaultNotaryNode
         notaryParty = network.defaultNotaryIdentity
+
+        listOf(a, b).forEach{it.registerInitiatedFlow(BaseReceivingFlow::class.java)}
 
         network.runNetwork()
     }

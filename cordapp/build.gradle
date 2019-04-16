@@ -1,4 +1,6 @@
-group 'center.orbita.personaldata'
+import net.corda.plugins.Cordform
+
+group 'center.orbita.callcenter'
 version '1.0-SNAPSHOT'
 
 apply plugin: 'kotlin'
@@ -19,7 +21,6 @@ repositories {
     maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases' }
     maven { url 'https://repo.spring.io/libs-milestone' }
 }
-
 
 configurations {
     integrationTestCompile.extendsFrom testCompile
@@ -69,5 +70,40 @@ publishing {
     }
     repositories {
         mavenLocal()
+    }
+}
+
+cordapp {
+    targetPlatformVersion 4
+    minimumPlatformVersion 4
+    workflow {
+        name "Call center CorDapp"
+        vendor "Orbita center"
+        licence "Apache License, Version 2.0"
+        versionId 1
+    }
+    signing{
+        enabled false
+    }
+}
+
+task deployNodes(type: Cordform, dependsOn: ['jar']) {
+    node {
+        name "O=Notary,L=Moscow,C=RU"
+        notary = [validating : true]
+        p2pAddress("172.21.0.2:10001")
+        rpcSettings {
+            address("172.21.0.2:10002")
+            adminAddress("172.21.0.2:10003")
+        }
+    }
+    node {
+        name "O=Agent,L=Moscow,C=RU"
+        p2pAddress("172.21.0.3:10004")
+        rpcSettings {
+            address("172.21.0.3:10005")
+            adminAddress("172.21.0.3:10006")
+        }
+        rpcUsers = [[user: "apiUser", "password": "c0rd@pass", "permissions": ["ALL"]]]
     }
 }

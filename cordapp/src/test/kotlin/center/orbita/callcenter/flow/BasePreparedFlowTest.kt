@@ -2,18 +2,19 @@ package center.orbita.callcenter.flow
 
 import center.orbita.callcenter.TestConstants
 import net.corda.core.contracts.CommandData
-import net.corda.core.contracts.Contract
 import net.corda.core.contracts.ContractState
 import net.corda.core.contracts.LinearState
 import net.corda.core.contracts.StateAndRef
-import net.corda.core.contracts.TypeOnlyCommandData
-import net.corda.core.transactions.LedgerTransaction
 import net.corda.core.transactions.TransactionBuilder
 import java.io.FileInputStream
 
 abstract class BasePreparedFlowTest<S : ContractState> : BaseFlowTest() {
 
     abstract fun createTestState(): S
+
+    abstract fun getContractId(): String
+
+    abstract fun getCommand(): CommandData
 
     protected open fun prepareAdditionalData() {
         // This is template method. Should be overriden if additional preparation needed
@@ -27,8 +28,8 @@ abstract class BasePreparedFlowTest<S : ContractState> : BaseFlowTest() {
         prepareAdditionalData()
 
         return TransactionBuilder(notary = notaryParty)
-                .addOutputState(s, TestContract.CONTRACT_ID)
-                .addCommand(TestContract.Prepare(), listOf(aParty.owningKey))
+                .addOutputState(s, getContractId())
+                .addCommand(getCommand(), listOf(aParty.owningKey))
     }
 
     fun queryStates(clazz: Class<out LinearState>): List<StateAndRef<LinearState>> {
@@ -45,19 +46,4 @@ abstract class BasePreparedFlowTest<S : ContractState> : BaseFlowTest() {
             }
         }
     }
-}
-
-class TestContract : Contract {
-    companion object {
-        @JvmStatic
-        val CONTRACT_ID = TestContract::class.qualifiedName!!
-    }
-
-    override fun verify(tx: LedgerTransaction) {
-        // verifying everything...
-    }
-
-    interface Commands : CommandData
-
-    class Prepare : Commands, TypeOnlyCommandData()
 }

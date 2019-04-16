@@ -5,7 +5,6 @@ import center.orbita.callcenter.state.RequestState
 import center.orbita.callcenter.structure.RequestModel
 import center.orbita.callcenter.util.SuspendableWrapper
 import co.paralleluniverse.fibers.Suspendable
-import net.corda.core.contracts.AlwaysAcceptAttachmentConstraint
 import net.corda.core.contracts.UniqueIdentifier
 import net.corda.core.flows.FlowLogic
 import net.corda.core.flows.StartableByRPC
@@ -18,7 +17,7 @@ class CreateRequestFlow(private val requestModel: RequestModel) : BaseInitiating
 
     override fun getTransaction(): TransactionBuilder {
         return TransactionBuilder(notary = getNotary())
-                .addOutputState(requestModel.convertToState(listOf(ourIdentity)), RequestContract.CONTRACT_ID, AlwaysAcceptAttachmentConstraint)
+                .addOutputState(requestModel.convertToState(listOf(ourIdentity)), RequestContract.CONTRACT_ID)
                 .addCommand(RequestContract.Create(), listOf(ourIdentity.owningKey))
     }
 
@@ -41,7 +40,7 @@ class ModifyRequestFlow(private val requestModel: RequestModel) : BaseInitiating
 
         return TransactionBuilder(notary = getNotary())
                 .addInputState(inputStateAndRef)
-                .addOutputState(outputState, RequestContract.CONTRACT_ID, AlwaysAcceptAttachmentConstraint)
+                .addOutputState(outputState, RequestContract.CONTRACT_ID)
                 .addCommand(RequestContract.Modify(), listOf(ourIdentity.owningKey))
     }
 
